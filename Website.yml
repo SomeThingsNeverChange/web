@@ -1,0 +1,53 @@
+---
+- hosts: webservers
+  become: yes
+  tasks:
+    - name: Apt update
+      apt:
+        upgrade: yes
+        state: present
+    - name: Install LAMP
+      apt:
+        name: mysql-server, php, libapache2-mod-php, php-mysql, apache2
+        state: present
+    - name: Allow Apache
+      community.general.ufw:
+        name: Apache
+        rule: allow
+        state: enabled
+        port: 80
+    - name: Create Virtual Host
+      file:
+        path: /var/www/domain
+        owner: some
+        state: directory
+    - name: Set domain
+      blockinfile:
+        path: /etc/apache2/sites-available/MyDomain.conf
+        create: yes
+        block: |
+          <VirtualHost *:80>
+              ServerName Rocks
+              ServerAlias www.Rocks
+              ServerAdmin webmaster@localhost
+              DocumentRoot /var/www/domain
+              ErrorLog ${APACHE_LOG_DIR}/error.log
+              CustomLog ${APACHE_LOG_DIR}/access.log combined
+          </VirtualHost>
+    - name: Enable site
+      shell: /usr/sbin/a2ensite MyDomain
+    - name: Sets up PHP info page
+      blockinfile:
+        path: /var/www/domain/info1.php
+        create: yes
+        block: |
+          <?php
+          phpinfo();
+    - name: Reload apache2
+      systemd:
+        name: apache2
+        state: reloaded
+    - name: Restart apache2
+      systemd:
+        name: apache2
+        state: restarted
