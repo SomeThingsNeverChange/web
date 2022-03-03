@@ -22,27 +22,17 @@
         owner: some
         state: directory
     - name: Set domain
-      blockinfile:
-        path: /etc/apache2/sites-available/MyDomain.conf
-        create: yes
-        block: |
-          <VirtualHost *:80>
-              ServerName Rocks
-              ServerAlias www.Rocks
-              ServerAdmin webmaster@localhost
-              DocumentRoot /var/www/domain
-              ErrorLog ${APACHE_LOG_DIR}/error.log
-              CustomLog ${APACHE_LOG_DIR}/access.log combined
-          </VirtualHost>
+          ansible.builtin.template:
+        src: ~/ansible-practice/setdomain
+        dest: /etc/apache2/sites-available/MyDomain.conf
+        backup: yes
     - name: Enable site
       shell: /usr/sbin/a2ensite MyDomain
     - name: Sets up PHP info page
-      blockinfile:
-        path: /var/www/domain/info1.php
-        create: yes
-        block: |
-          <?php
-          phpinfo();
+      ansible.builtin.template:
+        src: ~/ansible-practice/phpinfo
+        dest: /var/www/domain/info.php
+        backup: yes
     - name: Reload apache2
       systemd:
         name: apache2
