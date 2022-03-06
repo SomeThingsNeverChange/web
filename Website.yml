@@ -22,17 +22,17 @@
         owner: some
         state: directory
     - name: Set domain
-          ansible.builtin.template:
+      ansible.builtin.template:
         src: ~/ansible-practice/setdomain
         dest: /etc/apache2/sites-available/MyDomain.conf
         backup: yes
-    - name: Enable site
-      shell: /usr/sbin/a2ensite MyDomain
     - name: Sets up PHP info page
       ansible.builtin.template:
         src: ~/ansible-practice/phpinfo
         dest: /var/www/domain/info.php
         backup: yes
+    - name: Enable site
+      shell: /usr/sbin/a2ensite MyDomain
     - name: Reload apache2
       systemd:
         name: apache2
