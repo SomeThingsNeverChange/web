@@ -5,6 +5,7 @@
     - name: Apt update
       apt:
         upgrade: yes
+        update_cache: yes
         state: present
     - name: Install LAMP
       apt:
