@@ -1,5 +1,5 @@
 [webservers]
-52.179.122.205
+web ansible_host=52.179.122.205 ServerName=rocks ServerAlias=www.rocks
 
 [servers]
-13.90.119.212
+serv ansible_host=52.224.59.118 ServerName=client ServerAlias=www.client
