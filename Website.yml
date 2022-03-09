@@ -24,16 +24,20 @@
         state: directory
     - name: Set domain
       ansible.builtin.template:
-        src: ~/ansible-practice/setdomain
-        dest: /etc/apache2/sites-available/MyDomain.conf
+        src: ~/ansible-practice/setdomain.j2
+        dest: /etc/apache2/sites-available/domain.conf
         backup: yes
+    - name: Page html
+      ansible.builtin.template:
+        src: ~/ansible-practice/pagehtml.j2
+        dest: /var/www/domain/index.html
     - name: Sets up PHP info page
       ansible.builtin.template:
-        src: ~/ansible-practice/phpinfo
+        src: ~/ansible-practice/phpinfo.j2
         dest: /var/www/domain/info.php
         backup: yes
     - name: Enable site
-      shell: /usr/sbin/a2ensite MyDomain
+      shell: /usr/sbin/a2ensite domain
     - name: Reload apache2
       systemd:
         name: apache2
