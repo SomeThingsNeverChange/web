@@ -27,6 +27,11 @@
         src: ~/ansible-practice/setdomain.j2
         dest: /etc/apache2/sites-available/domain.conf
         backup: yes
+        - name: Index php
+      ansible.builtin.template:
+        src: ~/ansible-practice/indexphp.j2
+        dest: /etc/apache2/mods-available/dir.conf
+        force: yes
     - name: Page html
       ansible.builtin.template:
         src: ~/ansible-practice/pagehtml.j2
