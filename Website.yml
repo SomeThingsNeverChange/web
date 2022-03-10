@@ -38,6 +38,8 @@
         backup: yes
     - name: Enable site
       shell: /usr/sbin/a2ensite domain
+    - name: Disable default website
+      shell: /usr/sbin/a2dissite 000-default
     - name: Reload apache2
       systemd:
         name: apache2
