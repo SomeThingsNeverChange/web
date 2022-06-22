@@ -4,45 +4,52 @@
   tasks:
     - name: Apt update
       apt:
-        upgrade: yes
+        upgrade: "yes"
         update_cache: yes
         state: present
     - name: Install LAMP
       apt:
         name: mysql-server, php, libapache2-mod-php, php-mysql, apache2
         state: present
-    - name: Allow Apache
-      community.general.ufw:
-        name: Apache
-        rule: allow
+    - name: Enable ufw
+      ufw:
         state: enabled
-        port: 80
+        policy: allow
+    - name: Allow Apache
+      ufw:
+        name: "Apache Full"
+        rule: allow
+    - name: Allow OpenSSH
+      ufw:
+        name: OpenSSH
+        rule: allow
     - name: Create Virtual Host
       file:
-        path: /var/www/domain
-        owner: some
+        path: /var/www/{{ServerName}}
+        owner: prey
         state: directory
+    - name: Copy directory
+      copy:
+        src: /mnt/c/Solutions/
+        dest: /var/www/{{ServerName}}
+        force: yes
     - name: Set domain
       ansible.builtin.template:
-        src: ~/ansible-practice/setdomain.j2
-        dest: /etc/apache2/sites-available/domain.conf
+        src: ~/ansible/setdomain.j2
+        dest: /etc/apache2/sites-available/{{ServerName}}.conf
         backup: yes
-        - name: Index php
+    - name: Index php
       ansible.builtin.template:
-        src: ~/ansible-practice/indexphp.j2
+        src: ~/ansible/indexphp.j2
         dest: /etc/apache2/mods-available/dir.conf
         force: yes
-    - name: Page html
-      ansible.builtin.template:
-        src: ~/ansible-practice/pagehtml.j2
-        dest: /var/www/domain/index.html
     - name: Sets up PHP info page
       ansible.builtin.template:
-        src: ~/ansible-practice/phpinfo.j2
-        dest: /var/www/domain/info.php
+        src: ~/ansible/phpinfo.j2
+        dest: /var/www/{{ServerName}}/info.php
         backup: yes
     - name: Enable site
-      shell: /usr/sbin/a2ensite domain
+      shell: /usr/sbin/a2ensite {{ServerName}}
     - name: Disable default website
       shell: /usr/sbin/a2dissite 000-default
     - name: Reload apache2
